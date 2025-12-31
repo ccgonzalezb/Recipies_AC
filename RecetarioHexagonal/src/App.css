@@ -1,0 +1,152 @@
+/* 1. RESET Y FUENTES GLOBALES*/
+:root{
+  /* Variables para cambiar los colores fácil */
+  --color-fondo: #f0f4f8;       /* Gris azulado muy suave */
+  --color-primario: #2563eb;    /* Azul moderno (tipo Facebook/LinkedIn) */
+  --color-texto: #1e293b;       /* Gris muy oscuro (mejor que negro puro) */
+  --color-blanco: #ffffff;
+  --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --sombra-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente limpia */
+}
+
+body {
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* 2. CONTENEDOR PRINCIPAL */
+.contenedor-principal {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+h1 {
+  color: var(--color-primario);
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 3. SECCIÓN DE TARJETAS (Los botones de arriba) */
+.tarjeta {
+  display: flex;
+  flex-wrap: wrap; /* Para que bajen si no caben en el celular */
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+/* El cuadro individual de cada categoría */
+.tarjeta-comida {
+  background-color: var(--color-blanco);
+  border-radius: 16px;
+  padding: 15px;
+  width: 140px;
+  box-shadow: var(--sombra-suave);
+  transition: all 0.3s ease; /* Animación suave */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+/* Efecto al pasar el mouse por encima */
+.tarjeta-comida:hover {
+  transform: translateY(-5px); /* Se levanta un poco */
+  box-shadow: var(--sombra-hover);
+  border-color: var(--color-primario);
+}
+
+.tarjeta-comida p {
+  font-weight: 600;
+  color: var(--color-texto);
+  margin-bottom: 10px;
+}
+
+/* El botón transparente que envuelve la imagen */
+.tarjeta-comida button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+}
+
+.tarjeta-comida img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover; /* Para que la foto no se estire feo */
+  border-radius: 50%; /* Foto redonda */
+  border: 3px solid var(--color-fondo);
+}
+
+/* 4. SECCIÓN DE LA RECETA (El resultado abajo) */
+.detalle {
+  background-color: var(--color-blanco);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--sombra-suave);
+  text-align: left; /* Texto alineado a la izquierda para leer mejor */
+  max-width: 600px;
+  margin: 0 auto; /* Centrado */
+  animation: aparecer 0.5s ease-out; /* Animación de entrada */
+}
+
+/* Animación para que aparezca suavemente */
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detalle h2 {
+  color: var(--color-primario);
+  border-bottom: 2px solid var(--color-fondo);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.detalle img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: var(--sombra-suave);
+}
+
+.detalle h3 {
+  color: var(--color-primario);
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.detalle ul {
+  list-style-position: inside;
+  padding-left: 10px;
+}
+
+.detalle li {
+  margin-bottom: 8px;
+  color: #4b5563; /* Un gris un poco más suave para leer */
+}
+
+.detalle p {
+  line-height: 1.6; /* Espacio entre líneas para leer mejor */
+  color: #4b5563;
+}
