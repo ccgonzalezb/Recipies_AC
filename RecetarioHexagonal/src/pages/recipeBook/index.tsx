@@ -8,6 +8,7 @@ import {useRecipeBook} from './hooks'
 
 // 2. Importamos el componente visual 
 import TarjetaComida from "../../ui/components/TarjetaComida";
+import FormularioReceta from '../../ui/components/FormularioReceta';
 
 // 3. Importamos imagenes (Vite maneja así los assets)
 // Nota: Asegurate de tener estas imágenes en src/assets o usa URLs de internet temporalmente 
@@ -16,7 +17,6 @@ import imgAlmuerzo from "/img/almuerzos.jpg";
 import imgCena from "/img/cenas.jpg";
 import imgPostre from "/img/postres.jpg";
 
-import FormularioReceta from '../../ui/components/FormularioReceta';
 //import type { NuevaReceta } from "../../core/domain/Receta";
 
 // INSTANCIAMOS EL ADAPTADOR (Aquí enchufamos la "base de datos")
@@ -30,7 +30,10 @@ export const RecipeBook = () => {
 
   //const [recetaActual, setRecetaActual] = useState<Receta | null>(null);
   //const [cargando, setCargando] = useState<boolean>(false);
-  const {cargando, recetaActual, events:{guardarReceta, manejarSeleccion}} = useRecipeBook();
+  const {cargando, 
+        recetaActual,
+        recetaEditando, // <---------- Nuevo 
+        events:{guardarReceta, manejarSeleccion, eliminarReceta, iniciarEdicion, cancelarEdicion}} = useRecipeBook();
 
 
 //----------------------------------------------------------------------//
@@ -94,20 +97,36 @@ const guardarReceta = async (receta: NuevaReceta) => {
           <>
           <h2>{recetaActual.titulo}</h2>
           <img src={recetaActual.imagen} alt={recetaActual.titulo} style={{maxWidth: '100%', borderRadius: '10px'}}/>
+
+          {/*---Botones de acciones nuevos*/}
+          <div style={{display:'flex', gap: '10px', margin:'15px 0'}}>
+
+            <button onClick={iniciarEdicion} style={{backgroundColor: '#f59e0b', color:'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer'}}>
+              ✏️ Editar
+            </button>
+            <button onClick={eliminarReceta} style={{backgroundColor: '#ef4444', color:'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer'}}>
+              🗑️ Eliminar
+            </button>
+          </div>
+          {/*---------------------------- */}
+
           <h3>Ingredientes:</h3>
           <ul>
             {/*Ts sabe que 'ingredientes' es un array de strings */}
-            {recetaActual.ingredientes.map((ingrediente, index)=>(
-              <li key={index}>{ingrediente}</li>
-            ))}
-          </ul>
-          <h3>Preparación:</h3>
+            {recetaActual.ingredientes.map((ing, i) => <li key={i}>{ing}</li>)}
+          </ul>  
           <p>{recetaActual.preparacion}</p>
-          </>
-        )}
-      </div>
-      <FormularioReceta alEnviar={guardarReceta}/>
+        </>
+      )}
     </div>
+
+    {/*FORMULARIO CONECTADO */}
+    <FormularioReceta
+      alEnviar={guardarReceta}
+      recetaParaEditar={recetaEditando}
+      alCancelar={cancelarEdicion}
+    />  
+  </div>
   );
 }
 

@@ -2,12 +2,8 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-
-app.use(cors()); // Permite que React se conecte
-app.use(express.json());
-
 // Middlewares
-app.use(cors());
+app.use(cors());// Permite que React se conecte
 app.use(express.json());
 
 // --- AQUÍ OCURRE LA MAGIA ---

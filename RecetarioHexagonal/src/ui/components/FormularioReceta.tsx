@@ -1,12 +1,15 @@
-import { useState } from "react";
-import type { NuevaReceta, CategoriaComida } from "../../core/domain/Receta";
+import { useState, useEffect } from "react";
+import type { NuevaReceta, CategoriaComida, Receta } from "../../core/domain/Receta";
 
 interface Props {
     // Función que pasará el padre para guardar
     alEnviar: (receta:NuevaReceta) => void;
+    // Nuevas PROPS
+    recetaParaEditar: Receta | null;
+    alCancelar: () => void;
 } 
 
-export default function FormularioReceta({alEnviar}: Props)
+export default function FormularioReceta({alEnviar, recetaParaEditar, alCancelar}: Props)
 {
     // Estados para guardar lo que escribe el usuario
     const [titulo, setTitulo] = useState('');
@@ -14,6 +17,29 @@ export default function FormularioReceta({alEnviar}: Props)
     const [ingredientesTexto, setIngredientesTexto] = useState(''); // El usuario escribirá separado por comas
     const [preparacion, setPreparacion] = useState('');
     const [imagen, setImagen] = useState('');
+
+    // --- MAGIA: Detectar cambios en recetaParaEditar---
+    useEffect(() => {
+        if (recetaParaEditar){
+            // Si llega una receta, llenamos los campos
+            setTitulo(recetaParaEditar.titulo);
+            setCategoria(recetaParaEditar.categoria);
+            setIngredientesTexto(recetaParaEditar.ingredientes.join(', '));
+            setPreparacion(recetaParaEditar.preparacion);
+            setImagen(recetaParaEditar.imagen);
+        } else {
+            // Si no hay receta (o cancelamos), limpiamos 
+            limpiar();
+        }
+    }, [recetaParaEditar]);
+
+    const limpiar = () => {
+        setTitulo('');
+        setCategoria('desayuno');
+        setIngredientesTexto('');
+        setPreparacion('');
+        setImagen('');
+    }
 
     const manejarEnvio = (e:React.FormEvent) =>{
         e.preventDefault(); // Evita que se recargue la página
@@ -32,16 +58,16 @@ export default function FormularioReceta({alEnviar}: Props)
 
         // Llamamos a la función del padre
         alEnviar(nuevaReceta);
-
-        // Limpiamos el formulario
-        alert("¡Receta enviada!");
-        setTitulo('');
-        setPreparacion('');
+        if (!recetaParaEditar) limpiar(); // Solo limpiar si estamos creando
     };
 
+    //Cambiamos el color del botón si estamos editando 
+    const textoBoton = recetaParaEditar ? 'Actualizar receta': 'Guardar reeceta';
+    const colorBoton = recetaParaEditar ? "#f59e0b" : "#2563eb"; // Naranja vs Azul
+
     return (
-        <form onSubmit={manejarEnvio} className="detalle" style={{marginTop: '20px'}}>
-            <h2>🍳 Crear Nueva Receta</h2>
+        <form onSubmit={manejarEnvio} className="detalle" style={{marginTop: '20px', borderTop: '2px solid #eee', paddingTop: '20px'}}>
+            <h2>{recetaParaEditar ? '✏️ Editando Receta' : '🍳 Crear Nueva Receta'}</h2>
             <div style={{display: 'flex', flexDirection: 'column', gap:'10px'}}>
                 <input
                     type="text"
@@ -87,14 +113,19 @@ export default function FormularioReceta({alEnviar}: Props)
                     style={{padding: '10px'}}
                 />
 
-                <button 
-                    type="submit"
-                    style={{padding: '10px', backgroundColor: '#2563eb', color:'white', border:'none', borderRadius: '5px', cursor: 'pointer'}}
-                    >
-                        Guardar receta
-                </button>
+                <div style={{display:'flex', gap:'10px'}}>
+                    <button 
+                        type="submit"
+                        style={{padding: '10px', backgroundColor: colorBoton, color:'white', border:'none', borderRadius: '5px', cursor: 'pointer', flex: 1}}>
+                            {textoBoton}
+                    </button>
+                    {recetaParaEditar && (
+                        <button type="button" onClick={alCancelar} style={{padding: '10px', backgroundColor: '#9ca3af', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+                            Cancelar
+                        </button>
+                    )}
+                </div> 
             </div>
         </form>
     );
-
 }

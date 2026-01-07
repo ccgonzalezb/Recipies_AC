@@ -100,5 +100,42 @@ router.delete('/:id', (req, res) => {
     });
 });
 //----------------------------------------------//
+// 4. PUT (Actualizar/Modificar) 🔄
+// Ruta: /:id (Necesitamos saber CUÁL modificar)
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    // Recibimos los datos nuevos desde el formulario
+    const { titulo, categoria, ingredientes, preparacion, imagen } = req.body;
+
+    // Validamos que venga lo mínimo necesario
+    if (!titulo || !categoria) {
+        return res.status(400).json({ error: 'Faltan datos obligatorios para actualizar' });
+    }
+
+    // Convertimos ingredientes a JSON otra vez (igual que en el POST)
+    const ingredientesJSON = JSON.stringify(ingredientes);
+
+    // SQL UPDATE: "Actualiza la tabla recetas, ESTABLECE estos valores DONDE el id sea tal"
+    const sql = `
+        UPDATE recetas 
+        SET titulo = ?, categoria = ?, ingredientes = ?, preparacion = ?, imagen = ? 
+        WHERE id = ?
+    `;
+
+    db.query(sql, [titulo, categoria, ingredientesJSON, preparacion, imagen, id], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Error al actualizar' });
+        }
+
+        // Si affectedRows es 0, significa que el ID no existe (ej: ID 9999)
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Receta no encontrada para actualizar' });
+        }
+
+        res.json({ message: 'Receta actualizada correctamente' });
+    });
+});
+//----------------------------------------------//
 
 module.exports = router; // ¡Importante exportarlo!

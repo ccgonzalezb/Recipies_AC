@@ -14,6 +14,8 @@ export interface RecetaRepository {
     // NUEVO: Agregamos la firma de la función crear 
     // Recibe una NuevaReceta y promete devolver un boolean (true si se guardó, false si falló)
     crear(receta: NuevaReceta): Promise<boolean>;
+    eliminar(id:number):Promise<void>;
+    actualizar(receta:Receta):Promise<void>;
 }
 
 
