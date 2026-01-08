@@ -12,9 +12,11 @@ export class ApiRecetaRepository implements RecetaRepository {
   async obtenerAleatoria(categoria: CategoriaComida): Promise<Receta | null> {
     try {
       // 1. Hacemos la petición al backend real
-      const respuesta = await fetch(
+      /*const respuesta = await fetch(
         `http://localhost:3000/api/recetas/${categoria}`
-      );
+      );*/
+      const baseURl = import.meta.env.VITE_API_URL; //Vite lee las variables así
+      const respuesta = await fetch(`${baseURl}/${categoria}`);
 
       // 2. Si el servidor responde 404 (No encontrado) u otro error
       if (!respuesta.ok) {
@@ -36,7 +38,8 @@ export class ApiRecetaRepository implements RecetaRepository {
   // Nuevo: implementamos la función CREAR
   async crear(receta: NuevaReceta): Promise<boolean> {
     try {
-      const respuesta = await fetch("http://localhost:3000/api/recetas", {
+      const baseURl = import.meta.env.VITE_API_URL;
+      const respuesta = await fetch(`${baseURl}`, {
         method: "POST", // Metodo para guardar
         headers: {
           "content-type": "application/json", // Avisamos que enviamos JSON
@@ -56,7 +59,8 @@ export class ApiRecetaRepository implements RecetaRepository {
     console.log("Intentando eliminar ID: ", id);
 
     // 2. Llamamos al endpoint (SOLO URL Y METODO)
-    const respuesta = await fetch(`http://localhost:3000/api/recetas/${id}`, {
+    const baseURl = import.meta.env.VITE_API_URL;
+    const respuesta = await fetch(`${baseURl}/${id}`, {
       method: "DELETE",
       // Borramos headers y body, No son necesarios para un DELETE simple
     });
@@ -75,17 +79,15 @@ export class ApiRecetaRepository implements RecetaRepository {
     // 1. Validamos que tenga ID (por seguridad de TypeScript)
     if (!receta.id) throw new Error("La receta no tiene ID");
     // 2. Llamamos al endpoint PUT
-    const respuesta = await fetch(
-      `http://localhost:3000/api/recetas/${receta.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "content-type": "application/json",
-        },
-        // Enviamos todo el objeto receta como JSON
-        body: JSON.stringify(receta),
-      }
-    );
+    const baseURl = import.meta.env.VITE_API_URL;
+    const respuesta = await fetch(`${baseURl}/${receta.id}`, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      // Enviamos todo el objeto receta como JSON
+      body: JSON.stringify(receta),
+    });
 
     if (!respuesta.ok) {
       throw new Error("Error al actualizar receta");
