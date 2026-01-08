@@ -8,6 +8,8 @@ import type {
 import type { RecetaRepository } from "../../core/domain/RecetaRepository";
 
 export class ApiRecetaRepository implements RecetaRepository {
+  // 1. Definimos la URL como una propiedad privada de la clase
+  private baseURl = import.meta.env.VITE_API_URL;
   // Implementamos la misma función del contrato
   async obtenerAleatoria(categoria: CategoriaComida): Promise<Receta | null> {
     try {
@@ -15,8 +17,7 @@ export class ApiRecetaRepository implements RecetaRepository {
       /*const respuesta = await fetch(
         `http://localhost:3000/api/recetas/${categoria}`
       );*/
-      const baseURl = import.meta.env.VITE_API_URL; //Vite lee las variables así
-      const respuesta = await fetch(`${baseURl}/${categoria}`);
+      const respuesta = await fetch(`${this.baseURl}/${categoria}`);
 
       // 2. Si el servidor responde 404 (No encontrado) u otro error
       if (!respuesta.ok) {
@@ -38,8 +39,7 @@ export class ApiRecetaRepository implements RecetaRepository {
   // Nuevo: implementamos la función CREAR
   async crear(receta: NuevaReceta): Promise<boolean> {
     try {
-      const baseURl = import.meta.env.VITE_API_URL;
-      const respuesta = await fetch(`${baseURl}`, {
+      const respuesta = await fetch(`${this.baseURl}`, {
         method: "POST", // Metodo para guardar
         headers: {
           "content-type": "application/json", // Avisamos que enviamos JSON
@@ -59,8 +59,7 @@ export class ApiRecetaRepository implements RecetaRepository {
     console.log("Intentando eliminar ID: ", id);
 
     // 2. Llamamos al endpoint (SOLO URL Y METODO)
-    const baseURl = import.meta.env.VITE_API_URL;
-    const respuesta = await fetch(`${baseURl}/${id}`, {
+    const respuesta = await fetch(`${this.baseURl}/${id}`, {
       method: "DELETE",
       // Borramos headers y body, No son necesarios para un DELETE simple
     });
@@ -79,8 +78,7 @@ export class ApiRecetaRepository implements RecetaRepository {
     // 1. Validamos que tenga ID (por seguridad de TypeScript)
     if (!receta.id) throw new Error("La receta no tiene ID");
     // 2. Llamamos al endpoint PUT
-    const baseURl = import.meta.env.VITE_API_URL;
-    const respuesta = await fetch(`${baseURl}/${receta.id}`, {
+    const respuesta = await fetch(`${this.baseURl}/${receta.id}`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",
